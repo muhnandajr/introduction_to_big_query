@@ -1,0 +1,7 @@
+#query to retrive specific data, desc, and show just the unique id
+select distinct customer_id 
+from `ks-ugm-gojek-310007.access.transport_booking`
+where service_type = "GO-RIDE" 
+order by customer_id desc
+
+
