@@ -5,3 +5,9 @@ where service_type = "GO-RIDE"
 order by customer_id desc
 
 
+#show on order number with value 88
+select distinct customer_id 
+from `ks-ugm-gojek-310007.access.transport_booking`
+where order_no like '%88%'
+
+

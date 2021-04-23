@@ -1,0 +1,21 @@
+#retrieve total daily monetary value and delivery fee from GoFood
+#agregate by booking date
+select
+    booking_date,
+    count(order_no) total_order,
+    cast(sum(monetary_food) as numeric) as total_monetary_value,
+    cast(sum(monetary_delivery) as numeric) as total_delivery_fee
+from `ks-ugm-gojek-310007.access.gofood_booking`
+group by booking_date
+order by booking_date
+
+
+#agregate by customerid
+select
+    customer_id,
+    count(order_no) total_order,
+    cast(sum(monetary_food) as numeric) as total_monetary_value,
+    cast(sum(monetary_delivery) as numeric) as total_delivery_fee
+from `ks-ugm-gojek-310007.access.gofood_booking`
+group by 1
+order by 1
