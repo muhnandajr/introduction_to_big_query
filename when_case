@@ -1,0 +1,15 @@
+select 
+    booking_date,
+    order_no,
+    customer_id,
+    monetary_food,
+    monetary_delivery,
+case
+    when safe_divide(monetary_delivery, monetary_food) >= 2 then "More than twice"
+    when safe_divide(monetary_delivery, monetary_food) <= 0.5 then "Less than half"
+    else "About the same"
+end as status_order
+
+FROM `ks-ugm-gojek-310007.access.gofood_booking`
+WHERE booking_date between '2019-02-01' and '2019-02-28'
+
