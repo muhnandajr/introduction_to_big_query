@@ -1,0 +1,20 @@
+with
+all_bookings as(
+    select
+        s.customer_id,
+        count(distinct f.order_no) as food_order_cnt,
+        count(distinct s.order_no) as send_order_cnt
+    from `ks-ugm-gojek-310007.access.gosend_booking` as s
+    join `ks-ugm-gojek-310007.access.gofood_booking` f 
+        on s.customer_id = f.customer_id
+    where s.booking_date between '2019-03-01' and '2019-03-31'
+        and f.booking_date between '2019-03-01' and '2019-03-31'
+    group by 1
+)
+
+select
+    ab.*,
+    sgmt.segment
+from all_bookings ab
+left join `ks-ugm-gojek-310007.reference.customer_segment` sgmt
+    on ab.customer_id = sgmt.customer_id
