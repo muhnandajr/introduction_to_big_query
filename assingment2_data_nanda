@@ -1,0 +1,87 @@
+with all_transactions as (
+    select 
+        extract(month from booking_date) as month,
+        cast(sum(monetary_food) as numeric) as food_revenue,
+        0 as send_revenue,
+        0 as transport_revenue,
+        0 as goride_revenue,
+        0 as gocar_revenue,
+        0 as gobluebird_revenue,
+    from `ks-ugm-gojek-310007.access.gofood_booking`
+    group by 1
+    union all
+    select 
+        extract(month from booking_date) as month,
+        0 as food_revenue,
+        cast(sum(monetary) as numeric) as send_revenue,
+        0 as transport_revenue,
+        0 as goride_revenue,
+        0 as gocar_revenue,
+        0 as gobluebird_revenue
+    from `ks-ugm-gojek-310007.access.gosend_booking`
+    group by 1
+    union all
+    select 
+        extract(month from booking_date) as month,
+        0 as food_revenue,
+        0 as send_revenue,
+        cast(sum(monetary) as numeric) as transport_revenue,
+        0 as goride_revenue,
+        0 as gocar_revenue,
+        0 as gobluebird_revenue
+    from `ks-ugm-gojek-310007.access.transport_booking`
+    group by 1
+    union all
+    select 
+        extract(month from booking_date) as month,
+        0 as food_revenue,
+        0 as send_revenue,
+        0 as transport_revenue,
+        cast(sum(monetary) as numeric) as goride_revenue,
+        0 as gocar_revenue,
+        0 as gobluebird_revenue
+    from `ks-ugm-gojek-310007.access.transport_booking`
+    where service_type="GO-RIDE"
+    group by 1
+    union all
+    select 
+        extract(month from booking_date) as month,
+        0 as food_revenue,
+        0 as send_revenue,
+        0 as transport_revenue,
+        0 as goride_revenue,
+        cast(sum(monetary) as numeric) as gocar_revenue,
+        0 as gobluebird_revenue
+    from `ks-ugm-gojek-310007.access.transport_booking`
+    where service_type="GO-CAR"
+    group by 1
+    union all
+    select 
+        extract(month from booking_date) as month,
+        0 as food_revenue,
+        0 as send_revenue,
+        0 as transport_revenue,
+        0 as goride_revenue,
+        0 as gocar_revenue,
+        cast (sum(monetary) as numeric) as gobluebird_revenue
+    from `ks-ugm-gojek-310007.access.transport_booking`
+    where service_type="GO-BLUEBIRD"
+    group by 1
+),
+total_revenues as (
+    select
+        month,
+        sum(food_revenue) as food_revenue,
+        sum(send_revenue) as send_revenue,
+        sum(transport_revenue) as transport_revenue,
+        sum(goride_revenue) as goride_revenue,
+        sum(gocar_revenue) as gocar_revenue,
+        sum(gobluebird_revenue) as gobluebird_revenue, 
+        cast(sum(food_revenue) + sum(send_revenue) + sum(transport_revenue) as numeric) as total_revenues_all_bookings,
+    from all_transactions 
+    group by month
+    order by month
+)
+select * 
+from total_revenues 
+order by month asc
